@@ -1,23 +1,19 @@
-import telebot 
+import telebot
 from telebot import types
-from get_names import get_names  # Импортируем функцию из другого файла
+from functions.get_names import get_names  # Импортируем функцию из другого файла
 from main import main
 from token_1 import TOKEN
+from functions.main_menu import main_menu # Импортируем функцию из другого файла
+from functions.process_ticker import process_ticker # Импортируем функцию из другого файла
+from functions.handle_course import handle_course
 
-# Замените 'YOUR_API_TOKEN' на токен, полученный от BotFather
+
+
+
+
 API_TOKEN = '8185806685:AAEwqjsn_YyjcKjL_iTWdlqwRGO01XBWaLA'
 bot = telebot.TeleBot(API_TOKEN)
 
-# Функция для создания главного меню с кнопками
-def main_menu(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    search_button = types.KeyboardButton("Поиск 🔍")
-    course_button = types.KeyboardButton("Курс 📈")
-    info_button = types.KeyboardButton("Инфо ℹ️")
-    menu_button = types.KeyboardButton("Меню 📱")
-    refresh_button = types.KeyboardButton("Обновить 🔁")  # Новая кнопка Обновить
-    markup.add(search_button, course_button, info_button, menu_button, refresh_button)
-    bot.send_message(message.chat.id, "Выберите действие:", reply_markup=markup)
 
 # Обработка команды /start
 @bot.message_handler(commands=['start'])
@@ -30,19 +26,8 @@ def send_welcome(message):
 def handle_search(message):
     msg = bot.reply_to(message, "Пожалуйста, напишите тикер интересующей вас компании, например тикер Росбанка - ROSB:")
     bot.register_next_step_handler(msg, process_ticker)
+    
 
-# Обработка тикера
-def process_ticker(message):
-    ticker = message.text
-    main(ticker)
-    bot.reply_to(message, f"Создан файл со стоимостью акций за последние 3 года со свечой 1 час по тикеру - : {ticker}.")
-    main_menu(message)
-
-# Обработка нажатия кнопки "Курс"
-@bot.message_handler(func=lambda message: message.text == "Курс 📈")
-def handle_course(message):
-    bot.reply_to(message, "Эта кнопка пока ничего не делает. Тут будет транслироваться курс USD, EUR, BTC")
-    main_menu(message)
 
 # Обработка нажатия кнопки "Инфо"
 @bot.message_handler(func=lambda message: message.text == "Инфо ℹ️")
