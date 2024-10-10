@@ -1,15 +1,11 @@
 import telebot
-from telebot import types
 from functions.get_names import get_names  # Импортируем функцию из другого файла
-from main import main
 from token_1 import TOKEN
 from functions.main_menu import main_menu # Импортируем функцию из другого файла
 from functions.process_ticker import process_ticker # Импортируем функцию из другого файла
-from functions.handle_course import handle_course
-
-
-
-
+from telebot import types
+from functions.handle_course import get_currency_rates
+import requests
 
 API_TOKEN = '8185806685:AAEwqjsn_YyjcKjL_iTWdlqwRGO01XBWaLA'
 bot = telebot.TeleBot(API_TOKEN)
@@ -26,7 +22,18 @@ def send_welcome(message):
 def handle_search(message):
     msg = bot.reply_to(message, "Пожалуйста, напишите тикер интересующей вас компании, например тикер Росбанка - ROSB:")
     bot.register_next_step_handler(msg, process_ticker)
-    
+
+
+@bot.message_handler(func=lambda message: message.text == "Курс 📈")
+def send_rates(message):
+  rates = get_currency_rates()
+  usd_rate = rates['rates']['USD']
+  eur_rate = rates['rates']['EUR']
+  reply = f"Курс USD: {usd_rate}\nКурс EUR: {eur_rate}"
+  
+  bot.reply_to(message, reply)
+
+
 
 
 # Обработка нажатия кнопки "Инфо"
@@ -61,7 +68,8 @@ def handle_refresh(message):
     main_menu(message)
 
 
+
+
 # Запуск бота
 if __name__ == '__main__':
     bot.polling()
-
