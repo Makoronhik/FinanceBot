@@ -29,4 +29,3 @@ def get_names(TOKEN):
         
         
         return "Получили актуальные FIGI и Ticker акций российских компаний"
-

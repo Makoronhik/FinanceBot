@@ -9,4 +9,3 @@ def main(ticker):
     get_history(find_FIGI(ticker))
     
     process_quotation_data()
-
